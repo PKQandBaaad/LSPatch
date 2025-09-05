@@ -48,7 +48,7 @@ val (coreCommitCount, coreLatestTag) = FileRepositoryBuilder().setGitDir(rootPro
 val defaultManagerPackageName by extra("org.lsposed.npatch")
 val apiCode by extra(100)
 val verCode by extra(commitCount)
-val verName by extra("0.7.1")
+val verName by extra("0.6")
 val coreVerCode by extra(coreCommitCount)
 val coreVerName by extra(coreLatestTag)
 val androidMinSdkVersion by extra(27)
@@ -65,7 +65,7 @@ tasks.register<Delete>("clean") {
 
 listOf("Debug", "Release").forEach { variant ->
     tasks.register("build$variant") {
-        description = "Build NPatch with $variant"
+        description = "Build LSPatch with $variant"
         dependsOn(projects.jar.dependencyProject.tasks["build$variant"])
         dependsOn(projects.manager.dependencyProject.tasks["build$variant"])
     }
