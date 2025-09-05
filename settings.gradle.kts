@@ -29,7 +29,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "NPatch"
+rootProject.name = "LSPatch"
 include(
     ":apache",
     ":apkzlib",
