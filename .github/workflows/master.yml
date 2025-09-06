@@ -130,12 +130,12 @@ jobs:
       if: success()
       run: |
         curl -X POST -H "x-token: ${{ secrets.BOT_TOKEN }}" -H "x-filename: $(basename $(ls out/release/LSPatch-v*-release.apk))" --data-binary @$(ls out/release/LSPatch-v*-release.apk) https://${{ secrets.BOT_WORKER}}/uploadPatch
-        curl -X POST -H "x-token: ${{ secrets.BOT_TOKEN }}" -H "x-filename: $(basename $(ls out/debug/LSPatch-v*-release-log.zip))" --data-binary @$(ls out/debug/LSPatch-v*-release-log.zip) https://${{ secrets.BOT_WORKER}}/uploadPatchDebug
+        curl -X POST -H "x-token: ${{ secrets.BOT_TOKEN }}" -H "x-filename: $(basename $(ls out/debug/LSPatch-v*-release-log.apk))" --data-binary @$(ls out/debug/LSPatch-v*-release-log.apk) https://${{ secrets.BOT_WORKER}}/uploadPatchDebug
 
     - name: Upload to Telegram
       if: success()
       run: |
-        versionCode=$(basename $(ls ls out/debug/LSPatch-v*-release.zip) | cut -d'-' -f5)
+        versionCode=$(basename $(ls out/debug/LSPatch-v*-release.apk) | cut -d'-' -f5)
         echo "New version pushed: $versionCode" > /home/runner/message.txt
         echo -n "新版本已推送：$versionCode" >> /home/runner/message.txt
         message=$(cat /home/runner/message.txt)
