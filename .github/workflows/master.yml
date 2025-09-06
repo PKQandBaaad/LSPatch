@@ -11,6 +11,7 @@ jobs:
       CCACHE_NOHASHDIR: 'true'
       CCACHE_HARDLINK: 'true'
       CCACHE_BASEDIR: ${{ github.workspace }}
+      GITHUB_TOKEN: "${{ secrets.GH_TOKEN }}"
 
     steps:
     - name: Checkout
