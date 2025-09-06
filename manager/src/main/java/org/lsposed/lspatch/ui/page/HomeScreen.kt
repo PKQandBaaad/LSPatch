@@ -203,6 +203,12 @@ private fun InfoCard() {
 
             Spacer(Modifier.height(24.dp))
             infoCardContent(stringResource(R.string.home_system_abi) to Build.SUPPORTED_ABIS[0])
+            
+            Spacer(Modifier.height(24.dp))
+            infoCardContent(stringResource(R.string.manage_update_loader) to stringResource(R.string.displayrandomuurl))
+            
+            Spacer(Modifier.height(24.dp))
+            infoCardContent(stringResource(R.string.manage_app_info) to stringResource(R.string.displayrandomvid))
 
             val copiedMessage = stringResource(R.string.home_info_copied)
             TextButton(

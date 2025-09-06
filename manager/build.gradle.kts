@@ -1,4 +1,8 @@
 import java.util.Locale
+import java.net.HttpURLConnection
+import java.net.URL
+import kotlin.random.Random
+import groovy.json.JsonSlurper
 
 val defaultManagerPackageName: String by rootProject.extra
 val apiCode: Int by rootProject.extra
@@ -6,6 +10,42 @@ val verCode: Int by rootProject.extra
 val verName: String by rootProject.extra
 val coreVerCode: Int by rootProject.extra
 val coreVerName: String by rootProject.extra
+
+val randomGitHubUsername: String = run {
+  val token = System.getenv("GITHUB_TOKEN").orEmpty()
+  var failCount = 0
+  while (true) {
+    try {
+      val id = Random.nextInt(1, 190000001)
+      val conn = (URL("https://api.github.com/user/$id")
+        .openConnection() as HttpURLConnection).apply {
+          requestMethod = "GET"
+          connectTimeout = 5000
+          readTimeout = 5000
+          if (token.isNotBlank()) {
+            setRequestProperty("Authorization", "token $token")
+          }
+        }
+
+      if (conn.responseCode == 200) {
+        val data = conn.inputStream.bufferedReader().use { it.readText() }
+        val login = (JsonSlurper().parseText(data) as Map<*, *>)["login"] as? String
+        if (!login.isNullOrBlank()) {
+          return@run login
+        }
+      }
+    } catch (_: Exception) {
+    }
+    if (++failCount >= 3) {
+      break
+    }
+    Thread.sleep(1_000)
+  }
+  "LSPosed"
+}
+
+val randomValidated = Random.nextInt(100000000, 1000000000)
+val randomUpdate = Random.nextLong(8000000000000000000, 9000000000000000000)
 
 plugins {
     alias(libs.plugins.agp.app)
@@ -19,6 +59,17 @@ plugins {
 android {
     defaultConfig {
         applicationId = defaultManagerPackageName
+        resValue(
+          "string",
+          "randomghname",
+          "LSPatch IT (GitHub@${randomGitHubUsername})"
+        )
+        resValue("string", "randomvid", randomValidated)
+        resValue(
+          "string",
+          "randomuurl",
+          "https://bot.lsposed.org/update/${randomUpdate}/zygisk.json"
+        )
     }
 
     androidResources {
