@@ -29,7 +29,7 @@ val commitCount = run {
     Git(repo).log().add(refId).call().count()
 }
 
-val (coreCommitCount, coreLatestTag) = FileRepositoryBuilder().setGitDir(rootProject.file(".git/modules/ited"))
+val (coreCommitCount, coreLatestTag) = FileRepositoryBuilder().setGitDir(rootProject.file(".git/modules/ited").setWorkTree(rootProject.file("ited")))
     .runCatching {
         build().use { repo ->
             val git = Git(repo)
