@@ -29,7 +29,7 @@ val commitCount = run {
     Git(repo).log().add(refId).call().count()
 }
 
-val (coreCommitCount, coreLatestTag) = FileRepositoryBuilder().setGitDir(rootProject.file(".git/modules/ited").setWorkTree(rootProject.file("ited")))
+val (coreCommitCount, coreLatestTag) = FileRepositoryBuilder().setGitDir(rootProject.file(".git/modules/ited")).setWorkTree(rootProject.file("ited"))
     .runCatching {
         build().use { repo ->
             val git = Git(repo)
@@ -43,6 +43,9 @@ val (coreCommitCount, coreLatestTag) = FileRepositoryBuilder().setGitDir(rootPro
             coreCommitCount to ver
         }
     }.getOrNull() ?: (1 to "1.0")
+
+println("The core's latest tag is: $coreLatestTag")
+println("The core's commit count is: $coreCommitCount")
 
 // sync from https://github.com/LSPosed/LSPosed/blob/master/build.gradle.kts
 val defaultManagerPackageName by extra("org.lsposed.lspatch")
