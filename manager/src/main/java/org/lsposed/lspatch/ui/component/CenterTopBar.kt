@@ -21,7 +21,6 @@ fun CenterTopBar(@PreviewParameter(SampleStringProvider::class, 1) text: String)
                 text = text,
                 color = MaterialTheme.colorScheme.primary,
                 fontWeight = FontWeight.Bold,
-                fontFamily = FontFamily.Monospace,
                 style = MaterialTheme.typography.titleMedium
             )
         }

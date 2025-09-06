@@ -81,7 +81,6 @@ fun AppManageBody(
                     if (LSPPackageManager.appList.isEmpty()) stringResource(R.string.manage_loading)
                     else stringResource(R.string.manage_no_apps)
                 },
-                fontFamily = FontFamily.Serif,
                 style = MaterialTheme.typography.headlineSmall
             )
         }
@@ -170,7 +169,6 @@ fun AppManageBody(
                                             else append(it.second.lspConfig.VERSION_CODE.toString())
                                         },
                                         fontWeight = FontWeight.SemiBold,
-                                        fontFamily = FontFamily.Serif,
                                         style = MaterialTheme.typography.bodySmall
                                     )
                                     if (canUpdateLoader) {

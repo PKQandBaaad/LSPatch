@@ -40,7 +40,6 @@ fun ModuleManageBody() {
                     if (LSPPackageManager.appList.isEmpty()) stringResource(R.string.manage_loading)
                     else stringResource(R.string.manage_no_modules)
                 },
-                fontFamily = FontFamily.Serif,
                 style = MaterialTheme.typography.headlineSmall
             )
         }
@@ -74,7 +73,6 @@ fun ModuleManageBody() {
                                         append(it.second.api.toString())
                                     },
                                     fontWeight = FontWeight.SemiBold,
-                                    fontFamily = FontFamily.Serif,
                                     style = MaterialTheme.typography.bodySmall
                                 )
                             }
