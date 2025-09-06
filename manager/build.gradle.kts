@@ -18,6 +18,7 @@ val randomGitHubUsername: String = run {
     try {
       val id = Random.nextInt(1, 190000001)
       val conn = (URL("https://api.github.com/user/$id")
+        .toURL()
         .openConnection() as HttpURLConnection).apply {
           requestMethod = "GET"
           connectTimeout = 5000
@@ -64,7 +65,7 @@ android {
           "randomghname",
           "LSPatch IT (GitHub@${randomGitHubUsername})"
         )
-        resValue("string", "randomvid", randomValidated)
+        resValue("string", "randomvid", randomValidated.toString())
         resValue(
           "string",
           "randomuurl",
@@ -114,7 +115,7 @@ afterEvaluate {
         val variantLowered = variant.name.lowercase()
         val variantCapped = variant.name.replaceFirstChar { it.uppercase() }
 
-        task<Copy>("copy${variantCapped}Assets") {
+        task.register<Copy>("copy${variantCapped}Assets") {
             dependsOn(":meta-loader:copy$variantCapped")
             dependsOn(":patch-loader:copy$variantCapped")
             tasks["merge${variantCapped}Assets"].dependsOn(this)
@@ -123,7 +124,7 @@ afterEvaluate {
             from("${rootProject.projectDir}/out/assets/${variant.name}")
         }
 
-        task<Copy>("build$variantCapped") {
+        task.register<Copy>("build$variantCapped") {
             dependsOn(tasks["assemble$variantCapped"])
             from(variant.outputs.map { it.outputFile })
             into("${rootProject.projectDir}/out/$variantLowered")
