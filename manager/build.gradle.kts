@@ -132,7 +132,7 @@ afterEvaluate {
             dependsOn(tasks["assemble$variantCapped"])
             from(variant.outputs.map { it.outputFile })
             into("${rootProject.projectDir}/out/$variantLowered")
-            rename(".*.apk", "manager-v$verName-$verCode-$variantLoweredOutName.apk")
+            rename(".*.apk", "LSPatch-v$verName-$verCode-$variantLoweredOutName.apk")
         }
     }
 }
