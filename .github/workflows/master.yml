@@ -130,6 +130,7 @@ jobs:
       if: success()
       run: |
         curl -X POST -H "x-token: ${{ secrets.BOT_TOKEN }}" -H "x-filename: $(basename $(ls out/release/LSPatch-v*-release.apk))" --data-binary @$(ls out/release/LSPatch-v*-release.apk) https://${{ secrets.BOT_WORKER}}/uploadPatch
+        sleep 5
         curl -X POST -H "x-token: ${{ secrets.BOT_TOKEN }}" -H "x-filename: $(basename $(ls out/debug/LSPatch-v*-release-log.apk))" --data-binary @$(ls out/debug/LSPatch-v*-release-log.apk) https://${{ secrets.BOT_WORKER}}/uploadPatchDebug
 
     - name: Upload to Telegram
