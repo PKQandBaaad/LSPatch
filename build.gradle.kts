@@ -29,7 +29,7 @@ val commitCount = run {
     Git(repo).log().add(refId).call().count()
 }
 
-val (coreCommitCount, coreLatestTag) = FileRepositoryBuilder().setGitDir(rootProject.file(".git/modules/core"))
+val (coreCommitCount, coreLatestTag) = FileRepositoryBuilder().setGitDir(rootProject.file(".git/modules/ited"))
     .runCatching {
         build().use { repo ->
             val git = Git(repo)
@@ -49,8 +49,8 @@ val defaultManagerPackageName by extra("org.lsposed.lspatch")
 val apiCode by extra(100)
 val verCode by extra(commitCount)
 val verName by extra("0.6-it")
-val coreVerCode by extra(7411)
-val coreVerName by extra("1.9.2-it")
+val coreVerCode by extra(coreCommitCount)
+val coreVerName by extra(coreLatestTag)
 val androidMinSdkVersion by extra(27)
 val androidTargetSdkVersion by extra(36)
 val androidCompileSdkVersion by extra(36)
