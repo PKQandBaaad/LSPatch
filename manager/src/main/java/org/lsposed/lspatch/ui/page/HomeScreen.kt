@@ -71,7 +71,7 @@ fun HomeScreen(navigator: DestinationsNavigator) {
     }
 
     Scaffold(
-        topBar = { CenterTopBar(stringResource(R.string.app_name)) }
+        topBar = { CenterTopBar(stringResource(R.string.app_name_topbardisplay)) }
     ) { innerPadding ->
         Column(
             modifier = Modifier
