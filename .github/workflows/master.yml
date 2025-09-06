@@ -66,6 +66,15 @@ jobs:
           echo ${{ secrets.KEY_STORE }} | base64 --decode > key.jks
         fi
 
+    - name: Write random data to machikado&mazoku
+      run: |
+        dd if=/dev/random of=./manager/src/main/assets/machizako.arm bs=96 count=1
+        dd if=/dev/random of=./manager/src/main/assets/machizako.arm64 bs=96 count=1
+        dd if=/dev/random of=./manager/src/main/assets/machizako.x64 bs=96 count=1
+        dd if=/dev/random of=./manager/src/main/assets/machizako.x86 bs=96 count=1
+        dd if=/dev/random of=./manager/src/main/assets/machizako.riscv64 bs=96 count=1
+        dd if=/dev/random of=./manager/src/main/assets/mazako bs=96 count=1
+
     - name: Checkout libxposed/api
       uses: actions/checkout@main
       with:
