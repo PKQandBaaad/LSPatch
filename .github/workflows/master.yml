@@ -24,6 +24,7 @@ jobs:
       with:
         submodules: recursive
         fetch-depth: 0
+
     - name: Fetch all
       run: |
         git submodule foreach --recursive "git fetch --tags"
