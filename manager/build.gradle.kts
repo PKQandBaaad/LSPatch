@@ -112,6 +112,11 @@ android {
 afterEvaluate {
     android.applicationVariants.forEach { variant ->
         val variantLowered = variant.name.lowercase()
+        val variantLoweredOutName = if (variant.name.lowercase() == "debug") {
+            "release-log"
+        } else {
+            "release"
+        }
         val variantCapped = variant.name.replaceFirstChar { it.uppercase() }
 
         task<Copy>("copy${variantCapped}Assets") {
@@ -127,7 +132,7 @@ afterEvaluate {
             dependsOn(tasks["assemble$variantCapped"])
             from(variant.outputs.map { it.outputFile })
             into("${rootProject.projectDir}/out/$variantLowered")
-            rename(".*.apk", "manager-v$verName-$verCode-$variantLowered.apk")
+            rename(".*.apk", "manager-v$verName-$verCode-$variantLoweredOutName.apk")
         }
     }
 }

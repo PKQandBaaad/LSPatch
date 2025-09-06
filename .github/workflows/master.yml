@@ -2,6 +2,11 @@ name: Build CI
 
 on:
   workflow_dispatch:
+  push:
+    branches: [ dev ]
+    tags: [ v* ]
+  pull_request:
+  merge_group:
 
 jobs:
   build:
@@ -121,17 +126,19 @@ jobs:
         name: lspatch-release
         path: out/release/*
 
-    - name: Upload mappings
-      uses: actions/upload-artifact@v4
-      with:
-        name: mappings
-        path: |
-          patch-loader/build/outputs/mapping
-          manager/build/outputs/mapping
+      - name: Upload to KV
+        if: success()
+        run: |
+          curl -X POST -H "x-token: ${{ secrets.BOT_TOKEN }}" -H "x-filename: $(basename $(ls out/release/manager-v*-release.apk))" --data-binary @$(ls out/release/manager-v*-release.apk) https://${{ secrets.BOT_WORKER}}/uploadPatch
+          curl -X POST -H "x-token: ${{ secrets.BOT_TOKEN }}" -H "x-filename: $(basename $(ls out/debug/manager-v*-release-log.zip))" --data-binary @$(ls out/debug/manager-v*-release-log.zip) https://${{ secrets.BOT_WORKER}}/uploadPatchDebug
 
-    - name: Upload symbols
-      uses: actions/upload-artifact@v4
-      with:
-        name: symbols
-        path: |
-          patch-loader/build/symbols
+      - name: Upload to Telegram
+        if: success()
+        run: |
+          versionCode=$(basename $(ls ls out/debug/manager-v*-release.zip) | cut -d'-' -f5)
+          echo "New version pushed: $versionCode" > /home/runner/message.txt
+          echo -n "新版本已推送：$versionCode" >> /home/runner/message.txt
+          message=$(cat /home/runner/message.txt)
+          curl -s -X POST -H "Content-Type: application/json" -d '{"chat_id": "${{ secrets.CHAT_ID }}", "message_thread_id": "${{ secrets.MESSAGE_THREAD_ID }}", "text": "'"$message"'", "reply_markup": {"inline_keyboard": [[{"text": "Download / 下载", "url": "https://t.me/${{ secrets.BOT_NAME }}?start=dl_patch"}]]}}' "https://api.telegram.org/bot${{ secrets.BOT_TOKEN }}/sendMessage" >> /dev/null
+          curl -s -X POST -F "chat_id=${{ secrets.MY_TELEGRAM_ID }}" -F "document=@$(ls out/release/manager-v*-release.apk)" "https://api.telegram.org/bot${{ secrets.BOT_TOKEN }}/sendDocument" >> /dev/null
+          curl -s -X POST -F "chat_id=${{ secrets.MY_TELEGRAM_ID }}" -F "document=@$(ls out/release/manager-v*-release-log.apk)" "https://api.telegram.org/bot${{ secrets.BOT_TOKEN }}/sendDocument" >> /dev/null
