@@ -84,6 +84,13 @@ android {
                 "proguard-rules.pro"
             )
         }
+        debug {
+            isMinifyEnabled = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+        }
         all {
             sourceSets[name].assets.srcDirs(rootProject.projectDir.resolve("out/assets/$name"))
         }
