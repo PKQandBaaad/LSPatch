@@ -136,7 +136,7 @@ jobs:
     - name: Upload to Telegram
       if: success()
       run: |
-        versionCode=$(basename $(ls out/release/LSPatch-v*-release.apk) | cut -d'-' -f4)
+        versionCode=$(basename $(ls out/release/LSPatch-v*-release.apk) | cut -d'-' -f5)
         message_file="$GITHUB_WORKSPACE/message.txt"
         echo "New version pushed: $versionCode" > "$message_file"
         echo -n "新版本已推送：$versionCode" >> "$message_file"
