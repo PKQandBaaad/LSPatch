@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name" translatable="false">NPatch</string>
+    <string name="app_name" translatable="false">LSPatch</string>
+    <string name="app_name_topbardisplay" translatable="false">@string/randomghname</string>
+    <string name="displayrandomvid" translatable="false">@string/randomvid</string>
+    <string name="displayrandomuurl" translatable="false">@string/randomuurl</string>
 </resources>

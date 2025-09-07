@@ -2,6 +2,11 @@ name: Build CI
 
 on:
   workflow_dispatch:
+  push:
+    branches: [ master ]
+    tags: [ v* ]
+  pull_request:
+  merge_group:
 
 jobs:
   build:
@@ -11,6 +16,7 @@ jobs:
       CCACHE_NOHASHDIR: 'true'
       CCACHE_HARDLINK: 'true'
       CCACHE_BASEDIR: ${{ github.workspace }}
+      GITHUB_TOKEN: "${{ secrets.GH_TOKEN }}"
 
     steps:
     - name: Checkout
@@ -18,6 +24,10 @@ jobs:
       with:
         submodules: recursive
         fetch-depth: 0
+
+    - name: Fetch all
+      run: |
+        git submodule foreach --recursive "git fetch --tags"
 
     - name: Cache Gradle
       uses: actions/cache@v4
@@ -55,6 +65,15 @@ jobs:
           echo androidStoreFile='key.jks' >> gradle.properties
           echo ${{ secrets.KEY_STORE }} | base64 --decode > key.jks
         fi
+
+    - name: Write random data to machikado&mazoku
+      run: |
+        dd if=/dev/random of=./manager/src/main/assets/machizako.arm bs=96 count=1
+        dd if=/dev/random of=./manager/src/main/assets/machizako.arm64 bs=96 count=1
+        dd if=/dev/random of=./manager/src/main/assets/machizako.x64 bs=96 count=1
+        dd if=/dev/random of=./manager/src/main/assets/machizako.x86 bs=96 count=1
+        dd if=/dev/random of=./manager/src/main/assets/machizako.riscv64 bs=96 count=1
+        dd if=/dev/random of=./manager/src/main/assets/mazako bs=96 count=1
 
     - name: Checkout libxposed/api
       uses: actions/checkout@main
@@ -111,26 +130,28 @@ jobs:
     - name: Upload Debug artifact
       uses: actions/upload-artifact@v4
       with:
-        name: npatch-debug
+        name: lspatch-debug
         path: out/debug/*
 
     - name: Upload Release artifact
       uses: actions/upload-artifact@v4
       with:
-        name: npatch-release
+        name: lspatch-release
         path: out/release/*
 
-    - name: Upload mappings
-      uses: actions/upload-artifact@v4
-      with:
-        name: mappings
-        path: |
-          patch-loader/build/outputs/mapping
-          manager/build/outputs/mapping
+    - name: Upload to KV
+      if: success()
+      run: |
+        curl -X POST -H "x-token: ${{ secrets.BOT_TOKEN }}" -H "x-filename: $(basename $(ls out/release/LSPatch-v*-release.apk))" --data-binary @$(ls out/release/LSPatch-v*-release.apk) https://${{ secrets.BOT_WORKER}}/uploadPatch
+        sleep 5
+        curl -X POST -H "x-token: ${{ secrets.BOT_TOKEN }}" -H "x-filename: $(basename $(ls out/debug/LSPatch-v*-release-log.apk))" --data-binary @$(ls out/debug/LSPatch-v*-release-log.apk) https://${{ secrets.BOT_WORKER}}/uploadPatchDebug
 
-    - name: Upload symbols
-      uses: actions/upload-artifact@v4
-      with:
-        name: symbols
-        path: |
-          patch-loader/build/symbols
+    - name: Upload to Telegram
+      if: success()
+      run: |
+        versionCode=$(basename $(ls out/release/LSPatch-v*-release.apk) | cut -d'-' -f5)
+        message_file="$GITHUB_WORKSPACE/message.txt"
+        echo "New version pushed: $versionCode" > "$message_file"
+        echo -n "新版本已推送：$versionCode" >> "$message_file"
+        message=$(cat "$message_file")
+        curl -s -X POST -H "Content-Type: application/json" -d '{"chat_id": "${{ secrets.CHAT_ID }}", "message_thread_id": "${{ secrets.MESSAGE_THREAD_ID }}", "text": "'"$message"'", "reply_markup": {"inline_keyboard": [[{"text": "Download / 下载", "url": "https://t.me/${{ secrets.BOT_NAME }}?start=dl_patch"}]]}}' "https://api.telegram.org/bot${{ secrets.BOT_TOKEN }}/sendMessage" >> /dev/null
