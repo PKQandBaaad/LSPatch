@@ -45,7 +45,7 @@ val (coreCommitCount, coreLatestTag) = FileRepositoryBuilder().setGitDir(rootPro
     }.getOrNull() ?: (1 to "1.0")
 
 // sync from https://github.com/LSPosed/LSPosed/blob/master/build.gradle.kts
-val defaultManagerPackageName by extra("org.lsposed.npatch")
+val defaultManagerPackageName by extra("org.lsposed.lspatch")
 val apiCode by extra(100)
 val verCode by extra(commitCount)
 val verName by extra("0.6-it")
@@ -65,7 +65,7 @@ tasks.register<Delete>("clean") {
 
 listOf("Debug", "Release").forEach { variant ->
     tasks.register("build$variant") {
-        description = "Build NPatch with $variant"
+        description = "Build LSPatch with $variant"
         dependsOn(projects.jar.dependencyProject.tasks["build$variant"])
         dependsOn(projects.manager.dependencyProject.tasks["build$variant"])
     }
